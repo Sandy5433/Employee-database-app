@@ -21,10 +21,10 @@ async function loadSelector() {
           name: "View All Departments",
           value: "VIEW_DEPARTMENT",
         },
-        // {
-        //   name: "Add Role",
-        //   value: "ADD_ROLE",
-        // },
+        {
+          name: "Add Role",
+          value: "ADD_ROLE",
+        },
         // {
         //   name: "View All Roles",
         //   value: "VIEW_ROLES",
@@ -65,20 +65,42 @@ async function insertDepartment() {
   const department = await prompt([
     {
       name: "name",
-      message: "What is the name of the department",
+      message: "What is the name of the department?",
     },
   ]);
+  console.log(department) //{name: 'Service'}
   await db.addDepartment(department);
   console.log(`added ${department.name} to the database`);
   loadSelector();
 }
 async function showDepartment() {
   const department = await db.viewDepartment();
-  console.log("here are all departments");
+  console.log("Here are all departments");
   console.table(department);
 
   loadSelector();
 }
+async function insertRole() {
+    const 
+    const role = await prompt([
+      {
+        name: "title",
+        message: "What is the name of the role?",
+      },
+      {
+        name: "salary",
+        message: "What is the salary of the role?",
+      },
+      {
+        name: "department_id",
+        message: "Which department does the role belong to?",
+        choices: []
+      },
+    ]);
+    await db.addRole(role);
+    console.log(`added ${role.name} to the database`);
+    loadSelector();
+  }
 function quit(){
     console.log('Application ended')
     process.exit()

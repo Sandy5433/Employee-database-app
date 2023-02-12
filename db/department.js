@@ -9,6 +9,12 @@ class Db {
     viewDepartment(){
         return this.db.query("SELECT * FROM department")
     }
+    addRole(value){
+        return this.db.query("INSERT INTO role SET ?", value)
+    }
 }
+
+
+
 module.exports = new Db(db)
 
