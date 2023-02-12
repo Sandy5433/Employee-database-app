@@ -21,22 +21,22 @@ async function loadSelector() {
           name: "View All Departments",
           value: "VIEW_DEPARTMENT",
         },
-        // {
-        //   name: "Add Role",
-        //   value: "ADD_ROLE",
-        // },
+        {
+          name: "Add Role",
+          value: "ADD_ROLE",
+        },
         {
           name: "View All Roles",
           value: "VIEW_ROLES",
         },
-        // {
-        //   name: "Add Employee",
-        //   value: "ADD_EMPLOYEE",
-        // },
-        // {
-        //   name: "Update Employee Role",
-        //   value: "UPDATE_EMPLOYEE",
-        // },
+        {
+          name: "Add Employee",
+          value: "ADD_EMPLOYEE",
+        },
+        {
+          name: "Update Employee Role",
+          value: "UPDATE_EMPLOYEE",
+        },
         {
           name: "View All Employees",
           value: "VIEW_EMPLOYEES",
@@ -55,14 +55,16 @@ async function loadSelector() {
       return insertDepartment();
     case "VIEW_DEPARTMENT":
       return showDepartment();
-    // case "ADD_ROLE":
-    //     return insertRole();
+    case "ADD_ROLE":
+        return insertRole();
     case "VIEW_ROLES":
         return showRole();
-    //case "ADD_EMPLOYEE":
-    //  return insertEmployee();
+    case "ADD_EMPLOYEE":
+     return insertEmployee();
     case "VIEW_EMPLOYEES":
         return showEmployee();
+    case "UPDATE_EMPLOYEE":
+        return updateEmployeeRole();
 
     default:
     console.log('third log')
@@ -85,47 +87,115 @@ async function insertDepartment() {
 async function showDepartment() {
   const department = await db.viewDepartment();
   console.log("Here are all departments");
+  // console.log(department);
   console.table(department);
 
   loadSelector();
 }
-// async function insertRole() {
-//     const 
-//     const role = await prompt([
-//       {
-//         name: "title",
-//         message: "What is the name of the role?",
-//       },
-//       {
-//         name: "salary",
-//         message: "What is the salary of the role?",
-//       },
-//       {
-//         name: "department_id",
-//         message: "Which department does the role belong to?",
-//         choices: []
-//       },
-//     ]);
-//     await db.addRole(role);
-//     console.log(`added ${role.name} to the database`);
-//     loadSelector();
-//   }
+async function insertRole() {
+    var departmentArr = await db.viewDepartment()
+    const choicesArr = departmentArr.map(({ id, name }) => ({
+      name: name,
+      value: id
+    }));
+    const role = await prompt([
+      {
+        name: "title",
+        message: "What is the name of the role?",
+      },
+      {
+        name: "salary",
+        message: "What is the salary of the role?",
+      },
+      {
+        type: "list",
+        name: "department_id",
+        message: "Which department does the role belong to?",
+        choices: choicesArr
+      },
+    ]);
+    await db.addRole(role);
+    console.log(`added ${role.name} to the database`);
+    loadSelector();
+  }
 
 async function showRole() {
     const role = await db.viewRole();
     console.log("Here are all roles");
+    console.log(role);
     console.table(role);
   
+    loadSelector();
+  }
+
+async function insertEmployee() {
+    var roleArr = await db.viewRole()
+    const trimmedRole = roleArr.map(({ID, Title}) => ({
+      name: Title,
+      value: ID
+    }));
+    var empArr = await db.viewEmployee()
+    const trimmedEmp = empArr.map(({ID, manager}) => ({
+      name: manager,
+      value: ID
+    }));
+    console.log(trimmedRole);
+    const employee = await prompt([
+      {
+        name: "first_name",
+        message: "What is the employee's first name?",
+      },
+      {
+        name: "last_name",
+        message: "What is the employee's last name?",
+      },
+      {
+        type: "list",
+        name: "role_id",
+        message: "What is the employee's role?",
+        choices: trimmedRole
+      },
+      {
+        type: "list",
+        name: "manager_id",
+        message: "Who is the employee's manager?",
+        choices: trimmedEmp
+      },
+    ]);
+    await db.addEmployee(employee);
+    console.log(`Added ${employee.name} to the database`);
     loadSelector();
   }
 
 async function showEmployee() {
     const employee = await db.viewEmployee();
     console.log("Here are all employees");
+    console.log(employee);
     console.table(employee);
   
     loadSelector();
   }
+ 
+async function updateEmployeeRole() {
+    const updateRole = await prompt([
+      {
+        type: "list",
+        // name: "name", first + surname
+        message: "Which employee's role do you want to update?",
+        choices: []
+      },
+      {
+        type: "list",
+        name: "Title",
+        message: "Which role do you want to assign the selected employee?",
+        choices: []
+      },
+    ]);
+    console.log(updateRole)
+    await db.updateEmployee(updateRole);
+    console.log(`Updated ${updateRole.name} in the database`);
+    loadSelector();
+  }  
   
 function quit(){
     console.log('Application ended')

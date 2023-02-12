@@ -16,7 +16,7 @@ class Db {
         return this.db.query("SELECT role.id AS ID, role.title AS Title, role.salary AS Salary, department.name AS Department FROM role JOIN department ON role.department_id = department.id")
     }
     addEmployee(value){
-        return console.log('hi')
+        return this.db.query("INSERT INTO employee SET ?", value)
     }
     viewEmployee(){
         return this.db.query("SELECT * FROM employee SELECT role.salary JOIN role ON employee.role_id = role.id JOIN department ON role.department_id = department.id")
@@ -24,6 +24,7 @@ class Db {
     updateEmployee(){
         return console.log('hi')
     }
+  
 }
 
 
