@@ -135,9 +135,9 @@ async function insertEmployee() {
       value: ID
     }));
     var empArr = await db.viewEmployee()
-    const trimmedEmp = empArr.map(({ID, manager}) => ({
+    const trimmedEmp = empArr.map(({manager_id, manager}) => ({
       name: manager,
-      value: ID
+      value: manager_id
     }));
     console.log(trimmedRole);
     const employee = await prompt([
@@ -163,7 +163,7 @@ async function insertEmployee() {
       },
     ]);
     await db.addEmployee(employee);
-    console.log(`Added ${employee.name} to the database`);
+    console.log(`Added ${employee.first_name} ${employee.last_name} to the database`);
     loadSelector();
   }
 
