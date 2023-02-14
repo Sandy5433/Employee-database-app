@@ -135,9 +135,9 @@ async function insertEmployee() {
       value: ID
     }));
     var empArr = await db.viewEmployee()
-    const trimmedEmp = empArr.map(({manager_id, manager}) => ({
-      name: manager,
-      value: manager_id
+    const trimmedEmp = empArr.map((manager) => ({
+      name: manager.first_name + ' ' + manager.last_name,
+      value: manager.id
     }));
     console.log(trimmedRole);
     const employee = await prompt([
@@ -162,6 +162,8 @@ async function insertEmployee() {
         choices: trimmedEmp
       },
     ]);
+    console.log(employee);
+    console.log(trimmedEmp);
     await db.addEmployee(employee);
     console.log(`Added ${employee.first_name} ${employee.last_name} to the database`);
     loadSelector();
@@ -177,22 +179,33 @@ async function showEmployee() {
   }
  
 async function updateEmployeeRole() {
+  var empArr = await db.viewEmployee();
+  const fullNameArr = empArr.map((staff) => ({
+    name: staff.first_name + ' ' + staff.last_name,
+    value: staff.id
+  }))
+  const roles = await db.viewRole();
+  const roleArr = roles.map((title) => ({
+    name: title.Title,
+    value: title.ID
+  }))
     const updateRole = await prompt([
       {
         type: "list",
-        // name: "name", first + surname
+        name: "id",
         message: "Which employee's role do you want to update?",
-        choices: []
+        choices: fullNameArr
       },
       {
         type: "list",
-        name: "Title",
+        name: "role_id",
         message: "Which role do you want to assign the selected employee?",
-        choices: []
+        choices: roleArr
       },
     ]);
     console.log(updateRole)
-    await db.updateEmployee(updateRole);
+    var reversed = updateRole.reverse()
+    await db.updateEmployee(reversed);
     console.log(`Updated ${updateRole.name} in the database`);
     loadSelector();
   }  
