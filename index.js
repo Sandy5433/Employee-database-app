@@ -204,9 +204,8 @@ async function updateEmployeeRole() {
       },
     ]);
     console.log(updateRole)
-    var reversed = updateRole.reverse()
-    await db.updateEmployee(reversed);
-    console.log(`Updated ${updateRole.name} in the database`);
+    await db.updateEmployee([updateRole.role_id, updateRole.id]);
+    console.log(`Updated role in the database`);
     loadSelector();
   }  
   
