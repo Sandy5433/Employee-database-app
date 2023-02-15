@@ -6,7 +6,6 @@ const db = require("./db/department");
 
 loadSelector();
 async function loadSelector() {
-    console.log('first log')
   const { choice } = await prompt([
     {
       type: "list",
@@ -48,8 +47,7 @@ async function loadSelector() {
       ]
     },
   ]);
-  console.log('second log')
-  console.log(choice)
+  // console.log(choice) returns a stringe e.g. 'ADD_ROLE'
   switch (choice) {
     case "INSERT_DEPARTMENT":
       return insertDepartment();
@@ -67,7 +65,6 @@ async function loadSelector() {
         return updateEmployeeRole();
 
     default:
-    console.log('third log')
       return quit();
   }
 }
@@ -79,15 +76,14 @@ async function insertDepartment() {
       message: "What is the name of the department?",
     },
   ]);
-  console.log(department) //{name: 'Service'}
+  // console.log(department) returns an object. e.g. {name: 'Service'}
   await db.addDepartment(department);
   console.log(`added ${department.name} to the database`);
   loadSelector();
 }
 async function showDepartment() {
   const department = await db.viewDepartment();
-  console.log("Here are all departments");
-  // console.log(department);
+  console.log("Here are all the departments");
   console.table(department);
 
   loadSelector();
@@ -115,14 +111,14 @@ async function insertRole() {
       },
     ]);
     await db.addRole(role);
-    console.log(`added ${role.name} to the database`);
+    console.log(`added ${role.title} to the database`);
     loadSelector();
   }
 
 async function showRole() {
     const role = await db.viewRole();
-    console.log("Here are all roles");
-    console.log(role);
+    console.log("Here are all the roles");
+    // console.log(role); returns an Object with 4 properties: ID, Title, Salary, Department
     console.table(role);
   
     loadSelector();
@@ -139,7 +135,7 @@ async function insertEmployee() {
       name: manager.first_name + ' ' + manager.last_name,
       value: manager.id
     }));
-    console.log(trimmedRole);
+    // console.log(trimmedRole); returns an array of objects with 2 properties, name and value
     const employee = await prompt([
       {
         name: "first_name",
@@ -162,8 +158,7 @@ async function insertEmployee() {
         choices: trimmedEmp
       },
     ]);
-    console.log(employee);
-    console.log(trimmedEmp);
+  
     await db.addEmployee(employee);
     console.log(`Added ${employee.first_name} ${employee.last_name} to the database`);
     loadSelector();
@@ -171,10 +166,8 @@ async function insertEmployee() {
 
 async function showEmployee() {
     const employee = await db.viewEmployee();
-    console.log("Here are all employees");
-    console.log(employee);
+    console.log("Here are all the employees");
     console.table(employee);
-  
     loadSelector();
   }
  
@@ -203,9 +196,9 @@ async function updateEmployeeRole() {
         choices: roleArr
       },
     ]);
-    console.log(updateRole)
+    // console.log(updateRole) returns an object with 2 properties, id and role_id
     await db.updateEmployee([updateRole.role_id, updateRole.id]);
-    console.log(`Updated role in the database`);
+   
     loadSelector();
   }  
   
@@ -213,84 +206,3 @@ function quit(){
     console.log('Application ended')
     process.exit()
 }
-
-
-
-// const firstQues = [
-//   {
-//     type: "list",
-//     name: "action",
-//     message: "What would you like to do?",
-//     choices: [
-//       "View All Employees",
-//       "Add Employee",
-//       "Update Employee Role",
-//       "View All Roles",
-//       "Add Role",
-//       "View All Departments",
-//       "Add Department",
-//       "Quit",
-//     ],
-//   },
-// ];
-
-// const addDepartmentQues = [
-//   {
-//     type: "input",
-//     name: "departmentName",
-//     message: "Please enter the name of the department",
-//   },
-// ];
-// function printDepartment() {
-//   db.query("SELECT * FROM department", function (err, results) {
-//     console.log(results);
-//   });
-// }
-
-// // var values = []
-// // console.table(['id', 'name'], values )
-
-// function addEmployee() {
-//   console.log("employee added");
-// }
-
-// function addDepartment() {
-//   inquirer.prompt(addDepartmentQues).then((answer) => {
-//     const newDepartment = answer.departmentName;
-//     db.query(
-//       "INSERT INTO department (name) VALUES (newDepartment)",
-//       function (err, results) {
-//         console.log(results);
-//       }
-//     );
-//   });
-// }
-
-// function addRole() {
-//   console.log("role added");
-// }
-
-// function startingQuestion() {
-//   inquirer.prompt(firstQues).then((answer) => {
-//     console.log(answer);
-//     if (answer.action === "View All Employees") {
-//       console.log("hello!");
-//     } else if (answer.action === "Add Employee") {
-//       addEmployee();
-//     } else if (answer.action === "Update Employee Role") {
-//       console.log("hello!");
-//     } else if (answer.action === "View All Roles") {
-//       console.log("hello!");
-//     } else if (answer.action === "Add Role") {
-//       addRole();
-//     } else if (answer.action === "View All Departments") {
-//       printDepartment();
-//     } else if (answer.action === "Add Department") {
-//       addDepartment();
-//     } else if (answer.action === "Quit") {
-//       console.log("bye");
-//     }
-//   });
-// }
-
-// // startingQuestion();
